@@ -1058,7 +1058,7 @@ css
     </a>
   </div>
   <div class="header-center">
-    Từ vựng bài học
+    Từ vựng bài học trên lớp
   </div>
 </header>
 
@@ -1070,17 +1070,32 @@ css
     <option value="1">Từ vựng bài học - 1</option>
     <option value="2">Từ vựng bài học - 2</option>
     <option value="3">Từ vựng bài học - 3</option>
+    <option value="4">Từ vựng bài học - 4</option>
     <option value="5">Từ vựng bài học - 5</option>
     <option value="6">Từ vựng bài học - 6</option>
     <option value="7">Từ vựng bài học - 7</option>
     <option value="8">Từ vựng bài học - 8</option>
     <option value="9">Từ vựng bài học - 9</option>
+    <option value="10">Từ vựng bài học - 10</option>
+    <option value="11">Từ vựng bài học - 11</option>
+    <option value="12">Từ vựng bài học - 12</option>
+    <option value="13">Từ vựng bài học - 13</option>
+    <option value="14A">Từ vựng bài học - 14A</option>
+    <option value="14B">Từ vựng bài học - 14B</option>
+    <option value="15">Từ vựng bài học - 15</option>
+    <option value="21A">Từ vựng bài học - 21</option>
+    <option value="21B">Từ vựng bài học - Liên từ</option>
+    <option value="22">Từ vựng bài học - 22</option>
+    <option value="23A">Từ vựng bài học - Trạng từ liên kết & Giới từ liên kết</option>
+    <option value="23B">Từ vựng bài học - 23B</option>
+    <option value="24">Từ vựng bài học - 24</option>
+
 
 
   </select>
-
-  <audio id="lessonAudio" controls>
-    <source src="" type="audio/mpeg">
+<!-- ĐOẠN NÀY CHÍNH LÀ THẺ AUDIO HIỆN TẠI CỦA BẠN -->
+  <audio id="lessonAudio" controls src="lesson1.mp3">
+    Trình duyệt không hỗ trợ phát audio.
   </audio>
 
 </div>
@@ -1337,13 +1352,24 @@ const data = {
   ],
 
 };
+/*
+=========================================================
+🎧 AUDIO BÀI HỌC
 
-const lessonAudios = {
-  1: "Lesson 1 Vocab.wav",
-  2: "Lesson 2 Vocab.wav",
+Quy tắc:
+Bài 1  → lesson1.mp3
+Bài 2  → lesson2.mp3
+Bài 3  → lesson3.mp3
+Bài 4  → lesson4.mp3
+...
 
+File MP3 phải nằm cùng thư mục với file HTML.
+=========================================================
+*/
 
-};
+function getLessonAudioFile(lessonNumber) {
+  return "lesson" + String(lessonNumber) + ".mp3";
+}
 
 let currList = 1,
     listCopy = [],
@@ -1359,24 +1385,37 @@ let meaningsVisible = true;
 
 /********** LOAD LIST **********/
 function loadList(){
-
-  currList = document.getElementById("wordList").value;
+  const select = document.getElementById("wordList");
+  currList = String(select.value);
 
   listCopy = [...data[currList]];
-
   totalWords = listCopy.length;
-
   knownCount = 0;
 
-  updateCounter();
+  // 🎧 ĐỔI AUDIO NGAY SAU KHI CHỌN BÀI
+  // Đặt đoạn này TRƯỚC loadExercises()
+  const audio = document.getElementById("lessonAudio");
+  audio.pause();
+  audio.currentTime = 0;
+  audio.src = getLessonAudioFile(currList);
+  audio.load();
 
+  updateCounter();
   renderWords();
 
   loadExercises();
 
   setMode(reviewMode);
-
 }
+
+document.getElementById("wordList").addEventListener("change", loadList);
+loadList();
+
+
+document.getElementById("wordList").addEventListener("change", loadList);
+
+// Bài mặc định
+loadList();
 
 function updateCounter(){
   document.getElementById("progressCounter").innerText =
@@ -1401,9 +1440,6 @@ function setMode(mode){
    nextWord();
 
 }
-
-document.getElementById("wordList").onchange = loadList;
-loadList();
 
 function speakWord(text){
 
